@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinergi Belajar - Sistem Presensi & Pembiasaan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2e7d32;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #2e7d32;
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+        h3 {
+            color: #1565c0;
+            margin: 5px 0 0 0;
+            font-weight: 500;
+            font-size: 18px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .btn-upload {
+            background-color: #0288d1;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .btn-upload:hover {
+            background-color: #01579b;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .preview-container {
+            margin-top: 8px;
+        }
+        .preview-img {
+            max-width: 90px;
+            max-height: 90px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            display: none;
+            margin: 5px auto 0 auto;
+        }
+        .status-text {
+            font-size: 12px;
+            color: #2e7d32;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #1b5e20;
+        }
+        .btn-submit:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #1565c0;
+            margin-top: 15px;
+        }
+        .folder-info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1e88e5;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-radius: 0 6px 6px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>BUKU SINERGI BELAJAR</h2>
+        <h3>Sistem Upload Penilaian Pembiasaan Spiritual</h3>
+    </div>
+
+    <div class="folder-info">
+        <strong>Penyimpanan Terhubung:</strong> Google Drive (ID Folder: 18Lma6tAliguS88T-kYqg9utXYa_nXSgC)
+    </div>
+    
+    <form id="pembiasaanForm">
+        <!-- Identitas Siswa -->
+        <div class="form-group">
+            <label for="namaSiswa">Nama Lengkap Siswa:</label>
+            <input type="text" id="namaSiswa" name="namaSiswa" placeholder="Masukkan nama siswa..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="kelasSiswa">Kelas:</label>
+            <select id="kelasSiswa" name="kelasSiswa" required>
+                <option value="">-- Pilih Kelas --</option>
+                <option value="Kelas 3">Kelas 3</option>
+                <option value="Kelas 4">Kelas 4</option>
+                <option value="Kelas 5">Kelas 5</option>
+                <option value="Kelas 6">Kelas 6</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="hari">Hari Evaluasi:</label>
+            <select id="hari" name="hari" required>
+                <option value="">-- Pilih Hari --</option>
+                <option value="Senin">Senin</option>
+                <option value="Selasa">Selasa</option>
+                <option value="Rabu">Rabu</option>
+                <option value="Kamis">Kamis</option>
+                <option value="Jumat">Jumat</option>
+            </select>
+        </div>
+
+        <!-- Tabel Indikator -->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 8%;">NO</th>
+                    <th style="width: 57%;">INDIKATOR</th>
+                    <th style="width: 35%;">AMBIL FOTO (KAMERA)</th>
+                </tr>
+            </thead>
+            <tbody id="tabelIndikator">
+                <!-- Baris tabel otomatis di-generate oleh JavaScript di bawah -->
+            </tbody>
+        </table>
+        
+        <div id="loading">Sedang mengunggah bukti ke Google Drive... Mohon tunggu.</div>
+        <button type="submit" id="submitBtn" class="btn-submit">Kirim Semua Bukti ke Database</button>
+    </form>
+</div>
+
+<script>
+    // Seluruh nomor dan teks indikator dari indeks gambar dimasukkan ke sini
+    const listIndikator = [
+        "Berdoa sebelum dan sesudah bangun tidur",
+        "Melaksanakan ibadah tepat waktu sesuai agama",
+        "Berdoa sebelum dan sesudah belajar",
+        "Berdoa sebelum dan sesudah makan",
+        "Mengucapkan salam ketika bertemu orang lain",
+        "Mengucapkan syukur atas nikmat Tuhan",
+        "Mengikuti kegiatan keagamaan dengan tertib",
+        "Menjaga sikap hormat saat beribadah"
+    ];
+
+    const tbody = document.getElementById('tabelIndikator');
+    const fileDataStore = {};
+
+    // Generate baris tabel otomatis berdasarkan listIndikator di atas
+    listIndikator.forEach((indikator, index) => {
+        const idNum = index + 1;
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td class="text-center"><strong>\${idNum}</strong></td>
+            <td>\${indikator}</td>
+            <td class="text-center">
+                <label class="btn-upload">
+                    📷 Kamera
+                    <input type="file" accept="image/*" capture="environment" onchange="processImage(this, \${idNum})" required>
+                </label>
+                <div class="preview-container">
+                    <div id="status-\${idNum}" class="status-text"></div>
+                    <img id="prev-\${idNum}" class="preview-img">
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    // Fungsi konversi berkas gambar langsung ke string base64
+    function processImage(input, id) {
+        const file = input.files[0];
+        const preview = document.getElementById(`prev-\${id}`);
+        const status = document.getElementById(`status-\${id}`);
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                status.textContent = "✓ Foto Siap";
+                
+                const base64String = e.target.result.split(',')[1];
+                fileDataStore[`foto\${id}`] = base64String;
+                fileDataStore[`namaFoto\${id}`] = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Mengirimkan form langsung ke Google Apps Script Executable milik pengguna
+    document.getElementById('pembiasaanForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyujiEXpuyxw0dxieiEe1kWL_AOW5YUiqhl_gZWVOpwSLPokDn8TyAHSQvkIic0W6_K9w/exec";
+
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        
+        submitBtn.disabled = true;
+        loading.style.display = 'block';
+
+        const payload = {
+            nama: document.getElementById('namaSiswa').value,
+            kelas: document.getElementById('kelasSiswa').value,
+            hari: document.getElementById('hari').value,
+            images: fileDataStore
+        };
+
+        fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                alert('Luar biasa! Semua bukti foto berhasil tersimpan di Google Drive Anda!');
+                document.getElementById('pembiasaanForm').reset();
+                document.querySelectorAll('.preview-img').forEach(img => img.style.display = 'none');
+                document.querySelectorAll('.status-text').forEach(st => st.textContent = '');
+            } else {
+                alert('Gagal mengirim data: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan koneksi saat mengirim data.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            loading.style.display = 'none';
+        });
+    });
+</script>
+
+</body>
+</html>
